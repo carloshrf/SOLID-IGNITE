@@ -1,0 +1,244 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "SOLID introduction add Documentation",
+        "description": "An API to complete a challenge",
+        "version": "1.0.0",
+        "contact": {
+            "email": "carlos_6282010@hotmail.com"
+        }
+    },
+    "servers": [{
+        "url": "http://localhost:3333/{resource}",
+        "variables": {
+            "resource": {
+                "default": "users",
+                "enum": ["users"]
+            }
+        }
+    }],
+    "paths": {
+        "/": {
+            "post": {
+                "tags": ["User"],
+                "description": "Create an User",
+                "summary": "Create an User",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "required": true
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "required": true
+                                    },
+                                    "admin": {
+                                        "type": "boolean"
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "This email was already used"
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["User"],
+                "description": "Show a list of all users by an admin user",
+                "summary": "Show all users",
+                "parameters": [{
+                    "in": "header",
+                    "name": "user_id",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/User"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "description": "* User does not exists\n * That user is not an admin\n"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{user_id}": {
+            "get": {
+                "tags": ["User"],
+                "description": "Show an unique user by id",
+                "summary": "Show an User",
+                "parameters": [{
+                    "in": "path",
+                    "name": "user_id",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "User does not exists"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{user_id}/admin": {
+            "patch": {
+                "tags": ["User"],
+                "description": "Turn an User as Admin by id",
+                "summary": "Turn an user as admin",
+                "parameters": [{
+                    "in": "path",
+                    "name": "user_id",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "This user does not exists"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "admin": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+
+            }
+
+        }
+    }
+}
